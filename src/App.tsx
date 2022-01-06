@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { FC, ReactNode } from 'react';
+import { BrowserRouter,  Route, Routes } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { routes } from './config/routes-config';
+
+
+
+const App: FC = () => {
+  function getRoutes(): ReactNode[] {
+    return routes.map(r => <Route key={r.path} path={r.path} element={r.element}/>)
+  }
+  return <BrowserRouter>
+
+    <Routes>
+     {getRoutes()}
+    </Routes>
+  </BrowserRouter>
 }
 
 export default App;

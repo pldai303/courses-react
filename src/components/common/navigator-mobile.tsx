@@ -8,7 +8,7 @@ import { RouteType } from '../../models/common/route-type';
 
 function getActiveLabel(path: string, items: RouteType[]): string {
     if (path !== '/') {
-        const res = items.filter(item => item.path === path);
+        const res = items.filter(item => item.path === path); 
         return res.length !== 0 ? res[0].label : 'Page does not exist';
     }
     return items.length > 0 ? items[0].label : 'Routes is empty';

@@ -2,20 +2,49 @@ import Course from "../models/course";
 import CoursesService from "./courses-service";
 
 export default class CoursesServiceRest implements CoursesService {
-    add(course: Course): Course {
-        throw new Error("Method not implemented.");
+    constructor(private url: string) { }
+    async add(course: Course): Promise<Course> {
+        const response = await fetch(this.url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(course)
+        })
+        return await response.json();
     }
-    remove(id: number): Course {
-        throw new Error("Method not implemented.");
+    async remove(id: number): Promise<Course> {
+        const oldCourse = await this.get(id);
+        await fetch(this.getUrlId(id), {
+            method: 'DELETE'
+        });
+        return oldCourse as Course;
     }
-    exists(id: number): boolean {
-        throw new Error("Method not implemented.");
+    private getUrlId(id: number) {
+        return `${this.url}/${id}`;
+    }
+    async exists(id: number): Promise<boolean> {
+        const responce = await fetch(this.getUrlId(id));
+        return responce.ok;
     }
     get(id?: number): Promise<Course[]> | Promise<Course> {
-        throw new Error("Method not implemented.");
+        return id == undefined ? fetchGet(this.url) as Promise<Course[]> :
+            fetchGet(this.getUrlId(id)) as Promise<Course>;
+
     }
-    update(id: number, newCourse: Course): Course {
-        throw new Error("Method not implemented.");
+    async update(id: number, newCourse: Course): Promise<Course> {
+        const oldCourse = await this.get(id);
+        await fetch(this.getUrlId(id), {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newCourse)
+        });
+        return oldCourse as Course;
     }
-    
+}
+async function fetchGet(url: string): Promise<any> {
+    const response = await fetch(url);
+    return await response.json();
 }

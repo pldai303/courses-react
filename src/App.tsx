@@ -26,11 +26,15 @@ const App: FC = () => {
 
   const [storeValueState, setStoreValue] = useState<CoursesStore>(initialCourses);
   function poller() {
-    college.getAllCourses().then(arr => {
-      storeValueState.list = arr;
-      setStoreValue({ ...storeValueState })
+    college.getAllCourses().subscribe({
+      next(arr) {
+        storeValueState.list = arr;
+        setStoreValue({ ...storeValueState })
+      }
     })
+
   }
+
   function addCourse(course: Course) {
     college.addCourse(course).then(() => poller());
   }

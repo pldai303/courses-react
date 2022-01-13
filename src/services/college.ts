@@ -1,5 +1,7 @@
 import Course from "../models/course";
 import CoursesService from "./courses-service";
+import { Observable } from "rxjs";
+
 
 export default class College {
     constructor(private coursesService: CoursesService) { }
@@ -13,8 +15,8 @@ export default class College {
     updateCourse(id: number, newCourse: Course): Promise<Course> {
         return this.coursesService.update(id, newCourse);
     }
-    getAllCourses(): Promise<Course[]> {
-        return this.coursesService.get() as Promise<Course[]>;
+    getAllCourses(): Observable<Course[]> {
+        return this.coursesService.get() as Observable<Course[]>;
     }
     getCourse(id: number): Promise<Course> {
         return this.coursesService.get(id) as Promise<Course>;

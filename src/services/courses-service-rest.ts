@@ -1,5 +1,6 @@
 import Course from "../models/course";
 import CoursesService from "./courses-service";
+import { Observable, from } from "rxjs"
 
 export default class CoursesServiceRest implements CoursesService {
     constructor(private url: string) { }
@@ -27,8 +28,9 @@ export default class CoursesServiceRest implements CoursesService {
         const responce = await fetch(this.getUrlId(id));
         return responce.ok;
     }
-    get(id?: number): Promise<Course[]> | Promise<Course> {
-        return id == undefined ? fetchGet(this.url) as Promise<Course[]> :
+    get(id?: number): Observable<Course[]> | Promise<Course> {
+        //FIXME there should be real Observable
+        return id == undefined ? from(fetchGet(this.url)) as Observable<Course[]> :
             fetchGet(this.getUrlId(id)) as Promise<Course>;
 
     }

@@ -1,8 +1,20 @@
 import Course from "../models/course";
 import CoursesService from "./courses-service";
 import { Observable, from } from "rxjs"
+const pollingInterval = 1000
+ class CoursesCache {
+    private cacheString: string = '';
 
+    setCache(courses: Course[]): void {
+        this.cacheString = JSON.stringify(courses);
+    }
+
+    isEquals(other: Course[]): boolean {
+        return JSON.stringify(other) === this.cacheString;
+    }
+}
 export default class CoursesServiceRest implements CoursesService {
+    cache: CoursesCache = new CoursesCache();
     constructor(private url: string) { }
     async add(course: Course): Promise<Course> {
         const response = await fetch(this.url, {
@@ -29,9 +41,27 @@ export default class CoursesServiceRest implements CoursesService {
         return responce.ok;
     }
     get(id?: number): Observable<Course[]> | Promise<Course> {
-        //FIXME there should be real Observable
-        return id == undefined ? from(fetchGet(this.url)) as Observable<Course[]> :
-            fetchGet(this.getUrlId(id)) as Promise<Course>;
+        if (id) {
+            return fetchGet(this.getUrlId(id));
+        } else {
+            return new Observable<Course[]>(observer => {
+                const interval = setInterval(() => {
+                    try {
+                        fetchGet(this.url).then(courses => {
+                                if (!this.cache.isEquals(courses)) {
+                                    this.cache.setCache(courses);
+                                    observer.next(courses);
+                                }
+                            });
+                        
+                    } catch (e) {
+                        observer.error(e);
+                    }
+                }, pollingInterval);
+
+                return () => clearInterval(interval);
+            });
+        }
 
     }
     async update(id: number, newCourse: Course): Promise<Course> {

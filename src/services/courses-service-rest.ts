@@ -32,6 +32,7 @@ export default class CoursesServiceRest implements CoursesService {
     async remove(id: number): Promise<Course> {
         const oldCourse = await this.get(id);
         await fetch(this.getUrlId(id), {
+            headers: getHeaders(),
             method: 'DELETE'
         });
         return oldCourse as Course;
@@ -40,7 +41,9 @@ export default class CoursesServiceRest implements CoursesService {
         return `${this.url}/${id}`;
     }
     async exists(id: number): Promise<boolean> {
-        const responce = await fetch(this.getUrlId(id));
+        const responce = await fetch(this.getUrlId(id), {
+            headers: getHeaders(),
+        });
         return responce.ok;
     }
     get(id?: number): Observable<Course[]> | Promise<Course> {
@@ -80,6 +83,8 @@ export default class CoursesServiceRest implements CoursesService {
     }
 }
 async function fetchGet(url: string): Promise<any> {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        headers: getHeaders()
+    });
     return await response.json();
 }

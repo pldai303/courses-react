@@ -3,3 +3,4 @@ export type UserData = {
     isAdmin: boolean;
     displayName: string;
 }
+export const nonAuthorizedUser: UserData = { username: '', isAdmin: false, displayName: '' };

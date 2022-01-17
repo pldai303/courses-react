@@ -1,7 +1,8 @@
 import { createContext } from "react";
+import { nonAuthorizedUser } from "../models/common/user-data";
 import CoursesStore from "../models/courses-store-type";
-import { createRandomCourses } from "../utils/random-course";
 
-export const initialCourses: CoursesStore = { list: createRandomCourses(10) };
+export const initialCourses: CoursesStore = { list: [],
+userData: nonAuthorizedUser};
 const CoursesContext = createContext<CoursesStore>(initialCourses);
 export default CoursesContext;

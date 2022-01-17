@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavigatorResponsive from './components/common/navigator-responsive';
 import { Subscription} from 'rxjs';
 import { PATH_COURSES, routes } from './config/routes-config';
-import { college } from './config/service-config';
+import { authService, college } from './config/service-config';
 import Course from './models/course';
 import CoursesStore from './models/courses-store-type';
 import CoursesContext, { initialCourses } from './store/context';
@@ -34,10 +34,19 @@ const App: FC = () => {
           setStoreValue({ ...storeValueState })
         }
       })
+    }
+      function getUserData(): Subscription {
+        return authService.getUserData().subscribe({
+          next(ud) {
+            storeValueState.userData = ud;
+            setStoreValue({ ...storeValueState })
+          }
+        })
   
     }
     storeValueState.add = addCourse;
     storeValueState.remove = removeCourse;
+    const subscriptionUserData = getUserData();
     const subscription = getData();
     
     return () => subscription.unsubscribe();

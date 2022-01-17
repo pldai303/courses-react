@@ -47,5 +47,6 @@
         5000,
         10000
     ],
-    "pollerInterval": 2000
+    "pollerInterval": 2000,
+    "passwordLength":8
 }

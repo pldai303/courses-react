@@ -1,11 +1,11 @@
 import { LoginData } from "../models/common/login-data";
-import { UserData } from "../models/common/user-data";
+import { nonAuthorizedUser, UserData } from "../models/common/user-data";
 import { Observable } from "rxjs";
 import AuthService from "./auth-service";
 import { nextTick } from "process";
 import { AUTH_TOKEN } from "./courses-service-rest";
 const pollingInterval: number = 2000;
-const nonAuthorizedUser: UserData = { username: '', isAdmin: false, displayName: '' };
+
 export default class AuthServiceJwt implements AuthService {
     private cache = '';
     constructor(private url: string) { }
@@ -60,7 +60,7 @@ function tokenToUserData(token: string): UserData {
     const payload: any = JSON.parse(Buffer.from(rawPayload, 'base64').toString("ascii"));
     return payload.exp < (Date.now() / 1000) ? nonAuthorizedUser : {
         username: payload.email,
-        displayName: payload.email, isAdmin: +payload.id === 1
+        displayName: payload.email, isAdmin: +payload.sub === 1
     };
 
 }

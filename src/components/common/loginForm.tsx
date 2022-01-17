@@ -39,7 +39,7 @@ const LoginForm: FC<LoginFormProps> = props => {
     }
 
 
-    return <form onSubmit={onSubmit}>
+    return <form onSubmit={onSubmit} onReset={()=>setLoginData(emptyLoginData)}>
         <TextField placeholder="Username/Email" required onChange={usernameHandler} />
         <TextField placeholder="Password" type="password" error={!!errorMessage}
             onChange={passwordHandler} helperText={errorMessage} required />

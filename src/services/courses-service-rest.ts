@@ -21,6 +21,7 @@ export default class CoursesServiceRest implements CoursesService {
     cache: CoursesCache = new CoursesCache();
     constructor(private url: string) { }
     async add(course: Course): Promise<Course> {
+        (course as any).userId = 1;
         const response = await fetch(this.url, {
             method: 'POST',
             headers: getHeaders(),

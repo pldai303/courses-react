@@ -1,6 +1,7 @@
-import { Typography } from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import React, { FC } from "react";
+import { authService } from "../../config/service-config";
 const Logout: FC = () => {
-    return <Typography>Logout works </Typography>
+    return <Button onClick={() => authService.logout()}>Confirm Logout</Button>
 }
 export default Logout;

@@ -56,12 +56,20 @@ function fetchUserData(): UserData {
 
 }
 function tokenToUserData(token: string): UserData {
+    let resUserData = nonAuthorizedUser;
     const rawPayload = token.split('.')[1]; // JSON in Base64 
-    const payload: any = JSON.parse(Buffer.from(rawPayload, 'base64').toString("ascii"));
-    return payload.exp < (Date.now() / 1000) ? nonAuthorizedUser : {
-        username: payload.email,
-        displayName: payload.email, isAdmin: +payload.sub === 1
-    };
+    //Fixme
+    //Buffer.from(rawPayload, 'base64').toString("ascii")
+    const payload: any = JSON.parse(atob(rawPayload));
+    if (payload.exp < (Date.now() / 1000)) {
+        localStorage.removeItem(AUTH_TOKEN);
+    } else {
+        resUserData = {
+            username: payload.email,
+            displayName: payload.email, isAdmin: +payload.sub === 1
+        }
+    }
+    return  resUserData;
 
 }
 

@@ -8,7 +8,7 @@ const Courses: FC = () => {
         <List>
             {storeValue.list.map(course =>
                 <ListItem key={course.id}>
-                    <ListItemButton onClick={storeValue.remove?.bind(this, course.id)}><Delete /></ListItemButton>
+                    {storeValue.userData.isAdmin && <ListItemButton  onClick={storeValue.remove?.bind(this, course.id)}><Delete /></ListItemButton>}
                     <ListItemText>{course.id} / {course.courseName} / {course.lecturerName} / {course.cost}</ListItemText>
                 </ListItem>)}
         </List>

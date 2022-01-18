@@ -1,18 +1,12 @@
 import { AppBar, Box, Container, Drawer, IconButton, Tab, Tabs, Toolbar, Typography } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Link, useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import { RouteType } from '../../models/common/route-type';
 
 
-function getActiveLabel(path: string, items: RouteType[]): string {
-    if (path !== '/') {
-        const res = items.filter(item => item.path === path); 
-        return res.length !== 0 ? res[0].label : 'Page does not exist';
-    }
-    return items.length > 0 ? items[0].label : 'Routes is empty';
-}
+
 
 function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
     let res = items.findIndex(item => path === item.path);
@@ -23,10 +17,13 @@ function getInitialActiveTabIndex(path: string, items: RouteType[]): number {
 const NavigatorDrawer: FC<{ items: RouteType[] }> = ({ items }) => {
 
     const path = useLocation().pathname;
-
-    const [label, setLabel] = useState(getActiveLabel(path, items));
-    const [activeTabIndex, setActiveTab] = useState(getInitialActiveTabIndex(path, items));
-
+const [activeTabIndex, setActiveTab] = useState(getInitialActiveTabIndex(path, items));
+    const [label, setLabel] = useState(items[activeTabIndex].label);
+    
+useEffect(()=>{
+setActiveTab(getInitialActiveTabIndex(path, items));
+setLabel(items[activeTabIndex].label);
+},[items,  path])
     document.title = label;
 
     const [displayDrawer, setStateDrawer] = useState(false);

@@ -3,7 +3,7 @@ import { FC, ReactNode, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavigatorResponsive from './components/common/navigator-responsive';
 import { Subscription} from 'rxjs';
-import { PATH_COURSES, routes } from './config/routes-config';
+import { PATH_COURSES, PATH_LOGIN, routes } from './config/routes-config';
 import { authService, college } from './config/service-config';
 import Course from './models/course';
 import CoursesStore from './models/courses-store-type';
@@ -68,7 +68,8 @@ const App: FC = () => {
       <NavigatorResponsive items={getRelevantRoutes(storeValueState.userData)} />
       <Routes>
         {getRoutes()}
-        <Route path='/' element={<Navigate to={PATH_COURSES}></Navigate>} />
+        <Route path='/' element={<Navigate
+         to={!!storeValueState.userData.username ? PATH_COURSES : PATH_LOGIN}></Navigate>} />
       </Routes>
     </BrowserRouter>
 

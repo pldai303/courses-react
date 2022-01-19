@@ -1,0 +1,94 @@
+{
+  "courses": [
+    {
+      "id": 529659,
+      "courseName": "JS",
+      "lecturerName": "Asher",
+      "hoursNum": 730,
+      "cost": 5957,
+      "type": "QA",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2018-08-11T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 330225,
+      "courseName": "JS",
+      "lecturerName": "Asher",
+      "hoursNum": 144,
+      "cost": 15961,
+      "type": "Programming",
+      "dayEvening": [
+        "Day"
+      ],
+      "startDate": "2018-02-17T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 309378,
+      "courseName": "Java Technologies",
+      "lecturerName": "Moses",
+      "hoursNum": 272,
+      "cost": 15394,
+      "type": "QA",
+      "dayEvening": [
+        "Day"
+      ],
+      "startDate": "2021-02-19T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 555535,
+      "courseName": "HTML",
+      "lecturerName": "Asher",
+      "hoursNum": 269,
+      "cost": 12108,
+      "type": "Programming",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2024-06-02T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 920440,
+      "courseName": "CSS",
+      "lecturerName": "Yackob",
+      "hoursNum": 746,
+      "cost": 6044,
+      "type": "QA",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2023-12-26T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 928383,
+      "courseName": "JS",
+      "lecturerName": "Naftali",
+      "hoursNum": 138,
+      "cost": 10090,
+      "type": "QA",
+      "dayEvening": [
+        "Day"
+      ],
+      "startDate": "2021-03-25T22:00:00.000Z",
+      "userId": 1
+    }
+  ],
+  "users": [
+    {
+      "email": "admin@tel-ran.co.il",
+      "password": "$2a$10$0d.gqun7BTHuD1lNHDNWAujVXkHwcpZIXGiXb8oJvA/JbJjfKcrpm",
+      "id": 1
+    },
+    {
+      "email": "user@tel-ran.co.il",
+      "password": "$2a$10$rSdI0lSvHmwhzOxLQ1olOujYO4gIGgRhst03Si3vKxtpASI/4W3Ni",
+      "id": 2
+    }
+  ]
+}

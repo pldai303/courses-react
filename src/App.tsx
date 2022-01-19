@@ -1,5 +1,5 @@
 
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavigatorResponsive from './components/common/navigator-responsive';
 import { Subscription} from 'rxjs';
@@ -10,6 +10,7 @@ import CoursesStore from './models/courses-store-type';
 import CoursesContext, { initialCourses } from './store/context';
 import { RouteType } from './models/common/route-type';
 import { UserData } from './models/common/user-data';
+import { Typography } from '@mui/material';
 
 
 function getRelevantRoutes(userData: UserData): RouteType[] {
@@ -28,9 +29,15 @@ const App: FC = () => {
   function removeCourse(id: number) {
     college.removeCourse(id).then();
   }
+ 
+  const [relevantRoutes, setRelevantRoutes] = useState<RouteType[]>(routes);
   function getRoutes(): ReactNode[] {
-    return getRelevantRoutes(storeValueState.userData).map(r => <Route key={r.path} path={r.path} element={r.element} />)
+    return relevantRoutes.map(r => <Route key={r.path} path={r.path} element={r.element} />)
   }
+  useEffect (()=>{
+    setRelevantRoutes(getRelevantRoutes((storeValueState.userData)));
+
+  }, [storeValueState.userData]) 
   useEffect(() => {
     
       function getUserData(): Subscription {
@@ -65,12 +72,14 @@ const App: FC = () => {
   return <CoursesContext.Provider value={storeValueState}>
 
     <BrowserRouter>
-      <NavigatorResponsive items={getRelevantRoutes(storeValueState.userData)} />
+      <NavigatorResponsive items={relevantRoutes} />
       <Routes>
         {getRoutes()}
-        <Route path='/' element={<Navigate
-         to={!!storeValueState.userData.username ? PATH_COURSES : PATH_LOGIN}></Navigate>} />
-      </Routes>
+        
+      <Route path={'*'} element={<Navigate to={relevantRoutes[0].path}/>}/>
+      </Routes> 
+     
+
     </BrowserRouter>
 
   </CoursesContext.Provider>

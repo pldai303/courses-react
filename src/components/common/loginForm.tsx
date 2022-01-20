@@ -1,51 +1,113 @@
-
-import { Button, TextField } from '@mui/material';
-import { FC, useState, useEffect } from 'react';
+import { Box, Button, TextField, Typography } from '@mui/material'
+import React, { FC, useState, useEffect } from 'react'
 import { LoginData } from '../../models/common/login-data';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Avatar from '@mui/material/Avatar';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 type LoginFormProps = {
     loginFn: (loginData: LoginData) => Promise<boolean>;
     passwordValidationFn: (password: string) => string;
 }
-const emptyLoginData: LoginData = { email: '', password: '' };
-const LoginForm: FC<LoginFormProps> = props => {
+const emptyLoginData: LoginData = { email: "", password: "" }
+
+const LoginForm: FC<LoginFormProps> = (props) => {
+    const theme = createTheme();
+
+
     const { loginFn, passwordValidationFn } = props;
     const [loginData, setLoginData] = useState<LoginData>(emptyLoginData);
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const [flValid, setValid] = useState<boolean>(false);
+    const [flValid, setflValid] = useState<boolean>(false);
+
     useEffect(() => {
-        setValid(!!loginData.email && !passwordValidationFn(loginData.password));
-    }, [loginData])
+        setflValid(!!loginData.email && !passwordValidationFn(loginData.password));
+    }, [loginData]);
+
     async function onSubmit(event: any) {
         event.preventDefault();
         const res: boolean = await loginFn(loginData);
         if (!res) {
-            alert("Wrong credentials")
+            alert("Wrong credentials");
         } else {
             alert("Login Successed")
         }
-
     }
+
     function usernameHandler(event: any) {
         loginData.email = event.target.value;
         setLoginData({ ...loginData });
     }
+
     function passwordHandler(event: any) {
         const password = event.target.value;
         const message = passwordValidationFn(password);
         setErrorMessage(message);
         loginData.password = password;
         setLoginData({ ...loginData });
-
     }
 
 
-    return <form onSubmit={onSubmit} onReset={()=>setLoginData(emptyLoginData)}>
-        <TextField placeholder="Username/Email" required onChange={usernameHandler} />
-        <TextField placeholder="Password" type="password" error={!!errorMessage}
-            onChange={passwordHandler} helperText={errorMessage} required />
-        <Button type="submit" disabled={!flValid}>Submit</Button>
-        <Button type="reset">Reset</Button>
+       return (
+        <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
+              <TextField
+                onChange={usernameHandler}
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                onChange={passwordHandler}
+                error={!!errorMessage}
+                helperText={errorMessage}
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
 
-    </form>
+              <Button
+                disabled={!flValid}
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>            
+            </Box>
+          </Box>
+        </Container>
+        </ThemeProvider>
+       )
 }
-export default LoginForm;
+
+export default LoginForm

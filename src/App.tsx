@@ -3,7 +3,7 @@ import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavigatorResponsive from './components/common/navigator-responsive';
 import { Subscription} from 'rxjs';
-import { PATH_COURSES, PATH_LOGIN, routes } from './config/routes-config';
+import { developmentRoutes, PATH_COURSES, PATH_LOGIN, routes } from './config/routes-config';
 import { authService, college } from './config/service-config';
 import Course from './models/course';
 import CoursesStore from './models/courses-store-type';
@@ -11,10 +11,15 @@ import CoursesContext, { initialCourses } from './store/context';
 import { RouteType } from './models/common/route-type';
 import { UserData } from './models/common/user-data';
 import { Typography } from '@mui/material';
+import process from 'process';
 
 
 function getRelevantRoutes(userData: UserData): RouteType[] {
-  return routes.filter(r => (!!userData.username && r.authenticated)
+  let resRoutes = routes;
+  if (process.env.NODE_ENV === 'development') {
+    resRoutes = resRoutes.concat(developmentRoutes);
+  }
+  return resRoutes.filter(r => (!!userData.username && r.authenticated)
    || (userData.isAdmin && r.adminOnly) || (!userData.username && !r.authenticated && !r.adminOnly))
 }
 const App: FC = () => {
@@ -32,7 +37,7 @@ const App: FC = () => {
  
   const [relevantRoutes, setRelevantRoutes] = useState<RouteType[]>(routes);
   function getRoutes(): ReactNode[] {
-    return relevantRoutes.map(r => <Route key={r.path} path={r.path} element={r.element} />)
+    return relevantRoutes.map((r: RouteType) => <Route key={r.path} path={r.path} element={r.element} />)
   }
   useEffect (()=>{
     setRelevantRoutes(getRelevantRoutes((storeValueState.userData)));

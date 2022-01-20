@@ -23,4 +23,8 @@ export const routes: RouteType[] = [
     {path: PATH_LOGOUT, element: <Logout/>, label: 'Sign out', authenticated: true},
     
 ]
+export const developmentRoutes: RouteType[] = [
+    // {path: '/courses/development/generation', element: <Generation/>,
+    //  label: 'Courses Generation', adminOnly: true}
+]
 

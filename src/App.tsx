@@ -27,12 +27,12 @@ const App: FC = () => {
   const [storeValueState, setStoreValue] = useState<CoursesStore>(initialCourses);
   
 
-  function addCourse(course: Course) {
-    college.addCourse(course).then();
+  function addCourse(course: Course): Promise<Course> {
+    return college.addCourse(course);
   }
 
-  function removeCourse(id: number) {
-    college.removeCourse(id).then();
+  function removeCourse(id: number): Promise<Course> {
+    return college.removeCourse(id);
   }
  
   const [relevantRoutes, setRelevantRoutes] = useState<RouteType[]>(routes);

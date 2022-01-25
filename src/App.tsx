@@ -25,7 +25,8 @@ function getRelevantRoutes(userData: UserData): RouteType[] {
 const App: FC = () => {
 
   const [storeValueState, setStoreValue] = useState<CoursesStore>(initialCourses);
-  
+  storeValueState.add = addCourse;
+  storeValueState.remove = removeCourse;
 
   function addCourse(course: Course): Promise<Course> {
     return college.addCourse(course);
@@ -69,8 +70,7 @@ const App: FC = () => {
         }
       })
     }
-    storeValueState.add = addCourse;
-    storeValueState.remove = removeCourse;
+   
     const subscription = getData();
     return () => subscription.unsubscribe();
   }, [])

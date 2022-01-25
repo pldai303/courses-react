@@ -1,5 +1,5 @@
 
-import { FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavigatorResponsive from './components/common/navigator-responsive';
 import { Subscription} from 'rxjs';
@@ -25,16 +25,9 @@ function getRelevantRoutes(userData: UserData): RouteType[] {
 const App: FC = () => {
 
   const [storeValueState, setStoreValue] = useState<CoursesStore>(initialCourses);
-  storeValueState.add = addCourse;
-  storeValueState.remove = removeCourse;
+  
 
-  function addCourse(course: Course): Promise<Course> {
-    return college.addCourse(course);
-  }
-
-  function removeCourse(id: number): Promise<Course> {
-    return college.removeCourse(id);
-  }
+  
  
   const [relevantRoutes, setRelevantRoutes] = useState<RouteType[]>(routes);
   function getRoutes(): ReactNode[] {

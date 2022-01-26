@@ -52,20 +52,18 @@ export default class CoursesServiceRest implements CoursesService {
         } else {
             return new Observable<Course[]>(observer => {
                 const interval = setInterval(() => {
-                    try {
+                 
                         if (!!localStorage.getItem(AUTH_TOKEN)) {
                             fetchGet(this.url).then(courses => {
                             if (!this.cache.isEquals(courses)) {
                                 this.cache.setCache(courses);
                                 observer.next(courses);
                             }
-                        });
+                        }).catch(err => observer.error(err));
                         }
                         
 
-                    } catch (e) {
-                        observer.error(e);
-                    }
+                   
                 }, pollingInterval);
 
                 return () => clearInterval(interval);

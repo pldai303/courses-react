@@ -17,10 +17,11 @@ function getInfo(course: Course): string[] {
         `Course Name: ${course.courseName}`,
         `Lecturer   : ${course.lecturerName}`,
         `Hours      : ${course.hoursNum}`,
+        `Cost : ${course.cost}`,
         `Openning Date : ${course.startDate.toLocaleDateString()}`,
         `Course Type : ${course.type}`,
         `Timing  : ${course.dayEvening.join(';')}`
-    ]
+    ];
     return res;
 }
 function getRows(courses: Course[]): GridRowsProp {
@@ -50,13 +51,13 @@ const Courses: FC = () => {
         return 'isNotMobile';
     }
     const callbackMode = useCallback(() =>
-     setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [storeValue.userData, mode]);
+        setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [storeValue.userData, mode]);
     const textModal = useRef<string[]>(['']);
-   
+
     useEffect(() => {
 
         callbackMode();
-    }, [storeValue,callbackMode])
+    }, [storeValue, callbackMode])
     function getColumns(userData: UserData): any[] {
         return [
             { field: 'courseName', headerName: 'Course Name', flex: 150, align: 'center', headerAlign: 'center' },

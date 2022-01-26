@@ -38,7 +38,8 @@ const App: FC = () => {
 
   }, [storeValueState.userData]) 
   useEffect(() => {
-    
+    console.log("useEffect....");
+
       function getUserData(): Subscription {
         return authService.getUserData().subscribe({
           next(ud) {
@@ -55,12 +56,21 @@ const App: FC = () => {
     return () => subscriptionUserData.unsubscribe();
   }, [])
   useEffect(() => {
+    
     function getData(): Subscription {
       return college.getAllCourses().subscribe({
         next(arr) {
+          
+          //make sure no Alert of service unavailability
           storeValueState.list = arr;
           setStoreValue({ ...storeValueState })
+        },
+        error(err) {
+          //TODO  rendering for Alert of service unavailability
+          //console.log(err);
+           setTimeout(getData, 2000);
         }
+
       })
     }
    
@@ -71,6 +81,7 @@ const App: FC = () => {
 
     <BrowserRouter>
       <NavigatorResponsive items={relevantRoutes} />
+      //TODO conditional rendering with Alert service unavailable
       <Routes>
         {getRoutes()}
         

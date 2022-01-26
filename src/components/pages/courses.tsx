@@ -1,5 +1,5 @@
 import { Typography, List, ListItem, ListItemButton, ListItemText, Paper, Box } from "@mui/material";
-import React, { FC, useContext, useState, useMemo, useEffect, useRef } from "react";
+import React, { FC, useContext, useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Delete, Visibility } from "@mui/icons-material";
 import CoursesContext from "../../store/context";
 import { GridColDef, GridRowsProp, DataGrid, GridActionsCellItem, GridRowParams, GridCellEditCommitParams } from "@mui/x-data-grid";
@@ -8,6 +8,8 @@ import Course from "../../models/course";
 import ActionConfirmation from "../common/action-confirmation";
 import ModalInfo from "../common/modal-info";
 import courseData from "../../config/courseData.json"
+import { CourseFieldName, dashboardCourseSizes } from "../../config/dashboard-config";
+import { useMediaQuery } from "react-responsive";
 
 function getInfo(course: Course): string[] {
     const res: string[] = [
@@ -27,32 +29,51 @@ function getRows(courses: Course[]): GridRowsProp {
 const Courses: FC = () => {
 
     const storeValue = useContext(CoursesContext);
-    const [columns, setColumns] = useState(getColumns(storeValue.userData));
+    const [sizedColumns, setSizedColumns] = useState<any[]>([]);
     const rows = useMemo(() => getRows(storeValue.list), [storeValue.list]);
     const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
     const [removeID, setRemoveID] = useState<number>(0);
     const [modalVisible, setModalVisible] = useState(false);
-
+    function getFilteredColumns(fields: CourseFieldName[]): any[] {
+        return getColumns(storeValue.userData).filter(column => fields.includes(column.field));
+    }
+    const isPortraitMobile = useMediaQuery({ maxWidth: 600, orientation: 'portrait' });
+    const isLandscape = useMediaQuery({ maxWidth: 900 });
+    const mode = useMemo(() => getMode(), [isPortraitMobile, isLandscape]);
+    function getMode(): string {
+        if (isPortraitMobile) {
+            return 'isPortraitMobile';
+        }
+        if (isLandscape) {
+            return 'isLandscape'
+        }
+        return 'isNotMobile';
+    }
+    const callbackMode = useCallback(() =>
+     setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [storeValue.userData, mode]);
     const textModal = useRef<string[]>(['']);
+   
     useEffect(() => {
-        setColumns(getColumns(storeValue.userData));
 
-    }, [storeValue]);
+        callbackMode();
+    }, [storeValue,callbackMode])
     function getColumns(userData: UserData): any[] {
         return [
             { field: 'courseName', headerName: 'Course Name', flex: 150, align: 'center', headerAlign: 'center' },
             { field: 'lecturerName', headerName: 'Lecturer', editable: !!userData.isAdmin, align: 'center', headerAlign: 'center', flex: 120 },
-            { field: 'hoursNum', headerName: 'Hours', type: 'number', editable: !!userData.isAdmin,
-            preProcessEditCellProps: (params: any) => {
-                const hours = +params.props.value
-                const hasError = hours < courseData.minHours || hours > courseData.maxHours;
-                return { ...params.props, error: hasError };
-              },
-             align: 'center', headerAlign: 'center' },
+            {
+                field: 'hoursNum', headerName: 'Hours', type: 'number', editable: !!userData.isAdmin,
+                preProcessEditCellProps: (params: any) => {
+                    const hours = +params.props.value
+                    const hasError = hours < courseData.minHours || hours > courseData.maxHours;
+                    return { ...params.props, error: hasError };
+                },
+                align: 'center', headerAlign: 'center'
+            },
             { field: 'cost', headerName: 'Cost', type: 'number', editable: !!userData.isAdmin, align: 'center', headerAlign: 'center' },
             { field: 'startDate', headerName: 'Openning Date', type: 'date', editable: !!userData.isAdmin, align: 'center', headerAlign: 'center', flex: 200 },
             {
-                field: 'actions', type: 'actions', getActions: (params: GridRowParams) => {
+                field: 'actions', type: 'actions', width: 70, getActions: (params: GridRowParams) => {
                     const actionItems = [<GridActionsCellItem icon={<Visibility />} label='Details'
                         onClick={() => showDetails(params.id as number)}></GridActionsCellItem>];
                     if (userData.isAdmin) {
@@ -95,8 +116,8 @@ const Courses: FC = () => {
         setModalVisible(true);
     }
     return <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Paper sx={{ width: '80vw', height: '80vh', marginTop: '2vh' }}>
-            <DataGrid rows={rows} columns={columns} onCellEditCommit={onEdit}/>
+        <Paper sx={{ width: { xs: '100vw', sm: '80vw' }, height: '80vh', marginTop: '2vh' }}>
+            <DataGrid rows={rows} columns={sizedColumns} onCellEditCommit={onEdit} />
         </Paper>
         <ActionConfirmation isVisible={confirmOpen} title="Course Remove"
             message={`Are you sure you want to remove course with ID '${removeID}'?`}

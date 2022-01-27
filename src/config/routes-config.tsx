@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import AddCourse from "../components/pages/add-course";
 import Courses from "../components/pages/courses";
+import Generation from "../components/pages/development/generation";
 import Login from "../components/pages/login";
 import Logout from "../components/pages/logout";
 import StatisticsCost from "../components/pages/statistics-cost";
@@ -22,5 +23,9 @@ export const routes: RouteType[] = [
     {path: PATH_LOGIN, element: <Login/>, label: 'Sign In>'},
     {path: PATH_LOGOUT, element: <Logout/>, label: 'Sign out', authenticated: true},
     
+]
+export const developmentRoutes: RouteType[] = [
+    {path: '/courses/development/generation', element: <Generation/>,
+     label: 'Courses Generation', adminOnly: true}
 ]
 

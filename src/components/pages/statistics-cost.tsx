@@ -1,14 +1,18 @@
-import { Typography, List, ListItem, ListItemText } from "@mui/material";
-import { FC, useContext } from "react";
+import _ from "lodash";
+import  { FC, useContext } from "react";
 import CoursesContext from "../../store/context";
-import { getElement } from "../../utils/courses-utils";
-const StatisticsCost: FC = () => {
-    const storeValue = useContext(CoursesContext);
+import Statistics from "../common/statistics";
+import courseData from '../../config/courseData.json'
 
-    return <Typography>Cost Statistic:
-        <List>
-            {getElement(storeValue.list, true, 5000).map((el, index) => <ListItem key={index}><ListItemText>Min: {el.minInterval} / Max: {el.maxInterval} / Amount: {el.amount}</ListItemText></ListItem>)}
-        </List>
-    </Typography>;
-}
-export default StatisticsCost;
+
+
+
+export const StatisticsCost: FC = () => {
+  const storeValue = useContext(CoursesContext);
+
+  
+    return <Statistics intervals={courseData.costDivider} field={"cost"}
+    data={storeValue.list} unit='ILS' inputLabelName='Cost Interval'></Statistics>
+    
+   }
+export default StatisticsCost

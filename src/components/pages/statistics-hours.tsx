@@ -1,14 +1,16 @@
-import { Typography, List, ListItem, ListItemText } from "@mui/material";
-import { FC, useContext } from "react";
+import courseData from '../../config/courseData.json'
+import { FC, useContext, useEffect, useState } from "react";
 import CoursesContext from "../../store/context";
-import { getElement } from "../../utils/courses-utils";
-const StatisticsHours: FC = () => {
-    const storeValue = useContext(CoursesContext);
+import Statistics from "../common/statistics"; 
 
-    return <Typography>Cost Statistic:
-        <List>
-            {getElement(storeValue.list, false, 100).map((el, index) => <ListItem key={index}><ListItemText>Min: {el.minInterval} / Max: {el.maxInterval} / Amount: {el.amount}</ListItemText></ListItem>)}
-        </List>
-    </Typography>;
+
+
+
+export const StatisticsHours: FC = () => {
+  const storeValue = useContext(CoursesContext);
+  
+return <Statistics intervals={courseData.hoursDivider} field={"hoursNum"}
+ data={storeValue.list} unit='h' inputLabelName='Hours Interval'></Statistics>
+ 
 }
-export default StatisticsHours;
+export default StatisticsHours

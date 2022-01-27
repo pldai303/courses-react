@@ -1,0 +1,253 @@
+{
+  "users": [
+    {
+      "email": "admin@tel-ran.co.il",
+      "password": "$2a$10$0d.gqun7BTHuD1lNHDNWAujVXkHwcpZIXGiXb8oJvA/JbJjfKcrpm",
+      "id": 1
+    },
+    {
+      "email": "user@tel-ran.co.il",
+      "password": "$2a$10$rSdI0lSvHmwhzOxLQ1olOujYO4gIGgRhst03Si3vKxtpASI/4W3Ni",
+      "id": 2
+    }
+  ],
+  "courses": [
+    {
+      "name": "QA Manual",
+      "lecturer": "Moses",
+      "hoursNum": 200,
+      "cost": 8000,
+      "type": "QA",
+      "dayEvening": [
+        "Day"
+      ],
+      "startAt": "2020-10-04T00:00:00.000Z",
+      "id": 309530,
+      "userId": 1
+    },
+    {
+      "name": "CSS",
+      "lecturer": "Naftali",
+      "hoursNum": 120,
+      "cost": 5000,
+      "type": "Programming",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startAt": "2020-01-20T00:00:00.000Z",
+      "id": 849158,
+      "userId": 1
+    },
+    {
+      "name": "React",
+      "lecturer": "Yackob",
+      "hoursNum": 350,
+      "cost": 11000,
+      "type": "Programming",
+      "dayEvening": [
+        "Day"
+      ],
+      "startAt": "2022-03-07T00:00:00.000Z",
+      "id": 365575,
+      "userId": 1
+    },
+    {
+      "name": "Java Core",
+      "lecturer": "Abraham",
+      "hoursNum": 82,
+      "cost": 5200,
+      "type": "Programming",
+      "dayEvening": [
+        "Day"
+      ],
+      "startAt": "2022-01-06T00:00:00.000Z",
+      "id": 893969,
+      "userId": 1
+    },
+    {
+      "id": 458980,
+      "courseName": "QA Manual",
+      "lecturerName": "Abraham",
+      "hoursNum": 640,
+      "cost": 12774,
+      "type": "QA",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2020-05-07T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 505319,
+      "courseName": "Java Technologies",
+      "lecturerName": "Moses",
+      "hoursNum": 386,
+      "cost": 10414,
+      "type": "Programming",
+      "dayEvening": [
+        "Day",
+        "Evening"
+      ],
+      "startDate": "2021-06-18T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 443926,
+      "courseName": "Java Core",
+      "lecturerName": "Yosef",
+      "hoursNum": 379,
+      "cost": 7443,
+      "type": "QA",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2020-05-23T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 352737,
+      "courseName": "Java Technologies",
+      "lecturerName": "Asher",
+      "hoursNum": 578,
+      "cost": 7286,
+      "type": "Programming",
+      "dayEvening": [
+        "Day",
+        "Evening"
+      ],
+      "startDate": "2022-05-05T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 912335,
+      "courseName": "React",
+      "lecturerName": "Asher",
+      "hoursNum": 245,
+      "cost": 18025,
+      "type": "Programming",
+      "dayEvening": [
+        "Day"
+      ],
+      "startDate": "2019-06-02T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 434017,
+      "courseName": "HTML",
+      "lecturerName": "Yackob",
+      "hoursNum": 739,
+      "cost": 8772,
+      "type": "Programming",
+      "dayEvening": [
+        "Day",
+        "Evening"
+      ],
+      "startDate": "2022-11-10T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 843545,
+      "courseName": "CSS",
+      "lecturerName": "Yosef",
+      "hoursNum": 159,
+      "cost": 19907,
+      "type": "QA",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2022-11-22T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 614508,
+      "courseName": "JS",
+      "lecturerName": "Abraham",
+      "hoursNum": 504,
+      "cost": 11801,
+      "type": "Programming",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2023-03-06T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 814033,
+      "courseName": "React",
+      "lecturerName": "Yosef",
+      "hoursNum": 783,
+      "cost": 14199,
+      "type": "Programming",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2024-06-16T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 982003,
+      "courseName": "QA Manual",
+      "lecturerName": "Moses",
+      "hoursNum": 416,
+      "cost": 12393,
+      "type": "Programming",
+      "dayEvening": [
+        "Day"
+      ],
+      "startDate": "2022-02-23T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 559346,
+      "courseName": "QA Manual",
+      "lecturerName": "Yackob",
+      "hoursNum": 537,
+      "cost": 19604,
+      "type": "QA",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2018-07-15T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 309278,
+      "courseName": "React",
+      "lecturerName": "Yosef",
+      "hoursNum": 769,
+      "cost": 16479,
+      "type": "QA",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2022-07-25T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 574778,
+      "courseName": "HTML",
+      "lecturerName": "Naftali",
+      "hoursNum": 440,
+      "cost": 11946,
+      "type": "Programming",
+      "dayEvening": [
+        "Day"
+      ],
+      "startDate": "2023-03-25T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 479694,
+      "courseName": "Java Technologies",
+      "lecturerName": "Yackob",
+      "hoursNum": 118,
+      "cost": 17976,
+      "type": "QA",
+      "dayEvening": [
+        "Day"
+      ],
+      "startDate": "2019-02-22T22:00:00.000Z",
+      "userId": 1
+    }
+  ]
+}

@@ -59,14 +59,14 @@ export default class CoursesServiceRest implements CoursesService {
                                 this.cache.setCache(courses);
                                 observer.next(courses);
                             }
-                        }).catch(err => observer.error(err));
+                        }).catch(err => {this.cache.setCache([]);observer.error(err)});
                         }
                         
 
                    
                 }, pollingInterval);
 
-                return () => clearInterval(interval);
+                return () => {console.log('clearing'); clearInterval(interval)};
             });
         }
 
@@ -75,9 +75,7 @@ export default class CoursesServiceRest implements CoursesService {
         const oldCourse = await this.get(id);
         await fetch(this.getUrlId(id), {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: getHeaders(),
             body: JSON.stringify(newCourse)
         });
         return oldCourse as Course;

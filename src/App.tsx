@@ -42,8 +42,9 @@ const App: FC = () => {
   function handleError(code: ErrorCode) {
 
     if (code === ErrorCode.NO_ERROR) {
+      console.log(code);
       setFlErrorServer(false);
-      return
+     
 
     } else if (code === ErrorCode.AUTH_ERROR) {
       authService.logout();

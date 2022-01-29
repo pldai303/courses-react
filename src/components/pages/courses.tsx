@@ -60,7 +60,7 @@ const Courses: FC = () => {
         return 'isNotMobile';
     }
     const callbackMode = useCallback(() =>
-        setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [storeValue.userData, mode]);
+        setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [storeValue, mode]);
     const textModal = useRef<string[]>(['']);
 
     useEffect(() => {
@@ -132,7 +132,7 @@ const Courses: FC = () => {
     }
     function handleUpdate(course: Course, status: boolean): void {
         if(status) {
-            storeValue.update(course.id, course);
+            storeValue.update!(course.id, course);
         }
         else {
             setFlUndo(!flUndo); 

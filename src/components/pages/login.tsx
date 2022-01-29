@@ -1,12 +1,14 @@
 import { Typography } from "@mui/material";
-import  { FC, Fragment, useState } from "react";
+import  { FC, Fragment, useContext, useState } from "react";
 import { authService } from "../../config/service-config";
 import { LoginData } from "../../models/common/login-data";
 import LoginForm from "../common/loginForm";
 import courseData from "../../config/courseData.json"
 import { Navigate } from "react-router-dom";
 import { PATH_COURSES } from "../../config/routes-config";
+import CoursesContext from "../../store/context";
 const Login: FC = () => {
+    
     const [flNavigate, setFlNavigate] = useState<boolean>(false);
 async function loginFn(loginData: LoginData):Promise<boolean> {
     const res = await authService.login(loginData);

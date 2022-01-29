@@ -1,8 +1,33 @@
 import Course from "../models/course";
 import CoursesService from "./courses-service";
 import { Observable, from } from "rxjs"
+import ErrorCode from "../models/common/error-code";
 const pollingInterval = 1000;
 export const AUTH_TOKEN = "auth_token";
+
+async function  getResponse(url: string, init?: RequestInit  ): Promise<Response>  {
+    let flInnerCatch = false;
+     try {
+         const response = await fetch(url, init);
+         if (response.status < 400 || response.status == 404) {
+             return response ;
+         }
+         const err = response.status == 401 || response.status == 403 ?
+         ErrorCode.AUTH_ERROR : ErrorCode.SERVER_UNAVAILABLE;
+         flInnerCatch = true
+         throw err;
+     } catch (err) {
+         if (flInnerCatch) {
+             throw err;
+         } else {
+             throw ErrorCode.SERVER_UNAVAILABLE;
+         }
+     }
+}
+async function requestRest(url: string, init?: RequestInit): Promise<any> {
+    const response: Response = await getResponse(url, init) ;
+    return await response.json();
+}
 class CoursesCache {
     private cacheString: string = '';
 
@@ -14,26 +39,27 @@ class CoursesCache {
         return JSON.stringify(other) === this.cacheString;
     }
 }
+
 function getHeaders(): { Authorization: string, "Content-Type": string } {
     return { Authorization: "Bearer " + localStorage.getItem(AUTH_TOKEN), "Content-Type": "application/json" };
 }
 export default class CoursesServiceRest implements CoursesService {
     cache: CoursesCache = new CoursesCache();
     constructor(private url: string) { }
-    async add(course: Course): Promise<Course> {
+     add(course: Course): Promise<Course> {
         (course as any).userId = 1;
-        const response = await fetch(this.url, {
+        return requestRest(this.url, {
             method: 'POST',
             headers: getHeaders(),
             body: JSON.stringify(course)
         })
-        return await response.json();
+       
     }
     async remove(id: number): Promise<Course> {
         const oldCourse = await this.get(id);
-        await fetch(this.getUrlId(id), {
-            headers: getHeaders(),
-            method: 'DELETE'
+        await requestRest(this.getUrlId(id),{
+            method: "DELETE",
+            headers: getHeaders()
         });
         return oldCourse as Course;
     }
@@ -41,10 +67,10 @@ export default class CoursesServiceRest implements CoursesService {
         return `${this.url}/${id}`;
     }
     async exists(id: number): Promise<boolean> {
-        const responce = await fetch(this.getUrlId(id), {
+        const response = await getResponse(this.getUrlId(id),{
             headers: getHeaders(),
-        });
-        return responce.ok;
+        } );
+        return response.ok;
     }
     get(id?: number): Observable<Course[]> | Promise<Course> {
         if (id) {
@@ -59,7 +85,11 @@ export default class CoursesServiceRest implements CoursesService {
                                 this.cache.setCache(courses);
                                 observer.next(courses);
                             }
-                        }).catch(err => {this.cache.setCache([]);observer.error(err)});
+                        }).catch(err => {
+                            
+                            this.cache.setCache([]);
+                            observer.error(err)
+                        });
                         }
                         
 
@@ -81,9 +111,9 @@ export default class CoursesServiceRest implements CoursesService {
         return oldCourse as Course;
     }
 }
-async function fetchGet(url: string): Promise<any> {
-    const response = await fetch(url, {
-        headers: getHeaders()
-    });
-    return await response.json();
+ function fetchGet(url: string): Promise<any> {
+        return  requestRest(url, {
+            headers: getHeaders()
+        }); 
+    
 }

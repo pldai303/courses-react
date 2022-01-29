@@ -30,7 +30,7 @@ const LoginForm: FC<LoginFormProps> = (props) => {
         event.preventDefault();
         const res: boolean = await loginFn(loginData);
         if (!res) {
-            alert("Wrong credentials");
+            alert("Wrong credentials or auth service is unavailable");
         } else {
             alert("Login Successed")
         }

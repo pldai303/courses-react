@@ -33,6 +33,7 @@ const App: FC = () => {
     initialCourses.update = (id, newCourse) =>
       college.updateCourse(id, newCourse).catch(err => handleError(err));
   }, [])
+  
   useEffect(() => {
     functionsInit();
   }, [functionsInit])
@@ -42,7 +43,7 @@ const App: FC = () => {
   function handleError(code: ErrorCode) {
 
     if (code === ErrorCode.NO_ERROR) {
-      console.log(code);
+    
       setFlErrorServer(false);
      
 
@@ -87,8 +88,10 @@ const App: FC = () => {
     return () => subscriptionUserData.unsubscribe();
   }, [])
   useEffect(() => {
-    let subscription = getData();
+    let subscription:any;
+     subscription = getData();
     function getData(): Subscription {
+      subscription && subscription.unsubscribe();
       return college.getAllCourses().subscribe({
 
         next(arr) {

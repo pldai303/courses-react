@@ -76,6 +76,7 @@ export default class CoursesServiceRest implements CoursesService {
         if (id) {
             return fetchGet(this.getUrlId(id));
         } else {
+            this.cache = new CoursesCache();
             return new Observable<Course[]>(observer => {
                 const interval = setInterval(() => {
                  

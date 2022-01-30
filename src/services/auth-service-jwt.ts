@@ -54,7 +54,7 @@ export default class AuthServiceJwt implements AuthService {
             return res;
         } catch (err) {
             this.flUnavailability = true;
-            localStorage.setItem(AUTH_TOKEN, 'xxx');
+            localStorage.setItem(AUTH_TOKEN, 'xxx'); //only for activating poller after service availability
             return false;
         }
 

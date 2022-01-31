@@ -17,7 +17,7 @@ export default class CoursesServiceFirestore implements CoursesService {
     async add(course: Course): Promise<Course> {
         const id = await this.getRandomId();
         course = {...course, id};
-        await setDoc(doc(this.fireCollection, id.toString()), course );
+        await this.setCourse(id, course);
         return course;
 
     }
@@ -52,11 +52,19 @@ export default class CoursesServiceFirestore implements CoursesService {
     }
     async update(id: number, newCourse: Course): Promise<Course> {
         const course = await this.get(id);
-         await setDoc(doc(this.fireCollection, id.toString()), newCourse);
+         await this.setCourse(id, newCourse);
          return course as Course;
 
     }
     
+
+    private async setCourse(id: number, newCourse: Course) {
+        await setDoc(doc(this.fireCollection, id.toString()), convertCourse(newCourse));
+    }
+
+}
+function convertCourse(course: Course): any {
+    return {...course, startDate: course.startDate.toISOString()}
 }
 
 

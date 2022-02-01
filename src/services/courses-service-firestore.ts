@@ -1,10 +1,14 @@
 import CoursesService from "./courses-service";
 import { collection, CollectionReference, deleteDoc, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import appFire from "../config/fire-config";
-import { map, Observable } from "rxjs";
+import { map, Observable, throwError } from "rxjs";
 import {collectionData} from "rxfire/firestore";
 import Course from '../models/course';
 import { getRandomInteger } from "../utils/common/random";
+import {catchError} from 'rxjs/operators'
+import ErrorCode from "../models/common/error-code";
+
+
 export default class CoursesServiceFirestore implements CoursesService {
 
     fireCollection: CollectionReference;
@@ -18,60 +22,68 @@ export default class CoursesServiceFirestore implements CoursesService {
     }
 
     async add(course: Course): Promise<Course> {
-        const id = await this.getId();
-        course.id = id;
-        course = this.fixDateCourse(course);
-        await setDoc(doc(this.fireCollection, id.toString()), course);
+        const id = await this.getRandomId();
+        course = {...course, id};
+        await this.setCourse(id, course);
         return course;
+
+    }
+    private async getRandomId(): Promise<number> {
+        let res: number;
+        do {
+            res = getRandomInteger(this.minId, this.maxId);
+        } while(await this.exists(res) )
+        return res;
     }
 
     async remove(id: number): Promise<Course> {
-        const oldCourse = await this.get(id);
-        await deleteDoc(this.getDocRef(id));
-        return oldCourse as Course;
+        const course = await this.get(id);
+        const docRef = doc(this.fireCollection, id.toString()); 
+        try {
+            await deleteDoc(docRef);
+        } catch (err) {
+            throw ErrorCode.AUTH_ERROR;
+        }
+        return course as Course;
     }
 
     async exists(id: number): Promise<boolean> {
-        const docSnap = await getDoc(this.getDocRef(id));
+        const docRef = doc(this.fireCollection, id.toString()); 
+        const docSnap = await getDoc(docRef); 
         return docSnap.exists();
     }
 
     get(id?: number): Promise<Course> | Observable<Course[]> {
         if (id !== undefined) {
-            return getDoc(this.getDocRef(id))
-            .then(docSnap => docSnap.data() as Course);
+            const docRef = doc(this.fireCollection, id.toString())
+        return getDoc(docRef).then(docSnap => docSnap.data() as Course) ;
+        
         }
-        return collectionData(this.fireCollection) as Observable<Course[]>;
+            return (collectionData(this.fireCollection) as Observable<Course[]>)
+            .pipe(catchError(err => {
+                console.log(err);
+                throw err.code ? ErrorCode.AUTH_ERROR: ErrorCode.SERVER_UNAVAILABLE}));
     }
 
     async update(id: number, newCourse: Course): Promise<Course> {
-        
-        const oldCourse = await this.get(id);
-        await setDoc(this.getDocRef(id), this.fixDateCourse(newCourse));
-        return oldCourse as Course;
+        const course = await this.get(id);
+         await this.setCourse(id, newCourse);
+         return course as Course;
+
     }
 
-    pull(): Promise<Course[]> {
-        throw new Error("Method not implemented.");
+    private async setCourse(id: number, newCourse: Course) {
+        try {
+            await setDoc(doc(this.fireCollection, id.toString()), convertCourse(newCourse));
+        } catch (err) {
+            throw ErrorCode.AUTH_ERROR;
+        }
     }
 
-    private async getId(): Promise<number> {
-        let id;
-        do {
-            id = getRandomInteger(this.minId, this.maxId);
-        } while (await this.exists(id));
-        return id;
-    }
+}
 
-    private getDocRef(id: number) {
-        return doc(this.fireCollection, id.toString());
-    }
-
-    private fixDateCourse(course: any): Course {
-        course.openDate = course.openDate.toISOString();
-        return course;
-    }
-
+function convertCourse(course: Course): any {
+    return {...course, startDate: course.startDate.toISOString()}
 }
 
 

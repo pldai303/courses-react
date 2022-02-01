@@ -2,7 +2,7 @@ import CoursesService from "./courses-service";
 import {collection, doc, getDoc, setDoc, deleteDoc, getFirestore, CollectionReference} from 'firebase/firestore';
 import firebase from 'firebase/firestore'
 import appFire from "../config/fire-config";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import {collectionData} from "rxfire/firestore";
 import Course from '../models/course';
 import { getRandomInteger } from "../utils/common/random";
@@ -33,7 +33,11 @@ export default class CoursesServiceFirestore implements CoursesService {
    async remove(id: number): Promise<Course> {
         const course = await this.get(id);
         const docRef = doc(this.fireCollection, id.toString()); 
-        await deleteDoc(docRef);
+        try {
+            await deleteDoc(docRef);
+        } catch (err) {
+            throw ErrorCode.AUTH_ERROR;
+        }
         return course as Course;
 
 
@@ -50,7 +54,13 @@ export default class CoursesServiceFirestore implements CoursesService {
         
         }
         
-        return collectionData(this.fireCollection) as Observable<Course[]>;
+       
+            return (collectionData(this.fireCollection) as Observable<Course[]>)
+            .pipe(catchError(err => {
+                console.log(err);
+                throw err.code ? ErrorCode.AUTH_ERROR: ErrorCode.SERVER_UNAVAILABLE}))
+        
+        ;
         
     }
     async update(id: number, newCourse: Course): Promise<Course> {
@@ -62,7 +72,11 @@ export default class CoursesServiceFirestore implements CoursesService {
     
 
     private async setCourse(id: number, newCourse: Course) {
-        await setDoc(doc(this.fireCollection, id.toString()), convertCourse(newCourse));
+        try {
+            await setDoc(doc(this.fireCollection, id.toString()), convertCourse(newCourse));
+        } catch (err) {
+            throw ErrorCode.AUTH_ERROR;
+        }
     }
 
 }

@@ -10,4 +10,4 @@ import AuthServiceFake from "../services/auth-service-fake";
 
 const courseProvider = new CoursesServiceFirestore("courses", courseData.minId , courseData.maxId);
 export const college = new College(courseProvider);
-export const authService = new AuthServiceFake();
+export const authService = new AuthServiceFire();

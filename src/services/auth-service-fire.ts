@@ -2,12 +2,16 @@ import AuthService from "./auth-service";
 import {getAuth, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import {authState} from 'rxfire/auth';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 import { LoginData } from "../models/common/login-data";
 import { nonAuthorizedUser, UserData } from "../models/common/user-data";
+import { collectionData } from "rxfire/firestore";
 import appFire from "../config/fire-config";
 export default class AuthServiceFire implements AuthService {
     private authFire = getAuth(appFire);
+    constructor(private  collectionAdministrators: string) {
+
+    }
     getUserData(): Observable<UserData> {
         return authState(this.authFire).pipe(map(user => (
             !!user ? {username: user.uid, isAdmin: true,

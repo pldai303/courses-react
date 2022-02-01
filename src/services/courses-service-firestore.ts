@@ -81,7 +81,6 @@ export default class CoursesServiceFirestore implements CoursesService {
     }
 
 }
-
 function convertCourse(course: Course): any {
     return {...course, startDate: course.startDate.toISOString()}
 }

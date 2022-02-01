@@ -26,6 +26,7 @@ function getRelevantRoutes(userData: UserData): RouteType[] {
   return resRoutes.filter(r => (!!userData.username && r.authenticated)
    || (userData.isAdmin && r.adminOnly) || (!userData.username && !r.authenticated && !r.adminOnly))
 }
+
 const App: FC = () => {
 
   const [storeValueState, setStoreValue] = useState<CoursesStore>(initialCourses);

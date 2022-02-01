@@ -21,4 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
 /src/config/fire-config.ts
+=======
+/src/config/fire-config.ts
+>>>>>>> 953c2930017d88c3c519fd1efd5b80226183f74d

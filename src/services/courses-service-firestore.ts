@@ -6,6 +6,8 @@ import { Observable } from "rxjs";
 import {collectionData} from "rxfire/firestore";
 import Course from '../models/course';
 import { getRandomInteger } from "../utils/common/random";
+import {catchError} from 'rxjs/operators'
+import ErrorCode from "../models/common/error-code";
 export default class CoursesServiceFirestore implements CoursesService {
     
     fireCollection: CollectionReference;
@@ -49,6 +51,7 @@ export default class CoursesServiceFirestore implements CoursesService {
         }
         
         return collectionData(this.fireCollection) as Observable<Course[]>;
+        
     }
     async update(id: number, newCourse: Course): Promise<Course> {
         const course = await this.get(id);

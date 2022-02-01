@@ -1,8 +1,9 @@
 
-import AuthServiceFake from "../services/auth-service-fake";
 import courseData from "./courseData.json";
 import College from "../services/college";
 import CoursesServiceFirestore from "../services/courses-service-firestore";
+import AuthServiceFire from "../services/auth-service-fire";
+import AuthServiceFake from "../services/auth-service-fake";
 
 
 

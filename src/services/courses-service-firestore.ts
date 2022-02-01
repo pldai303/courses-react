@@ -58,7 +58,7 @@ export default class CoursesServiceFirestore implements CoursesService {
             const docRef = doc(this.fireCollection, id.toString())
         return getDoc(docRef).then(docSnap => docSnap.data() as Course) ;
         
-        }
+        } 
             return (collectionData(this.fireCollection) as Observable<Course[]>)
             .pipe(catchError(err => {
                 console.log(err);

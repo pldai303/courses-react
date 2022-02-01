@@ -1,8 +1,17 @@
 import Course from "../models/course";
 import CoursesService from "./courses-service";
 import { Observable, from } from "rxjs"
+
+import getErrorType from "./error-types";
 const pollingInterval = 1000;
 export const AUTH_TOKEN = "auth_token";
+
+
+enum ExceptionTypes  {
+    notAuthorized = "User is not authorized"
+}
+
+
 class CoursesCache {
     private cacheString: string = '';
 
@@ -52,23 +61,21 @@ export default class CoursesServiceRest implements CoursesService {
         } else {
             return new Observable<Course[]>(observer => {
                 const interval = setInterval(() => {
-                    try {
+                 
                         if (!!localStorage.getItem(AUTH_TOKEN)) {
                             fetchGet(this.url).then(courses => {
                             if (!this.cache.isEquals(courses)) {
                                 this.cache.setCache(courses);
                                 observer.next(courses);
                             }
-                        });
+                        }).catch(err => {this.cache.setCache([]);observer.error(err)});
                         }
                         
 
-                    } catch (e) {
-                        observer.error(e);
-                    }
+                   
                 }, pollingInterval);
 
-                return () => clearInterval(interval);
+                return () => {clearInterval(interval)};
             });
         }
 
@@ -77,17 +84,22 @@ export default class CoursesServiceRest implements CoursesService {
         const oldCourse = await this.get(id);
         await fetch(this.getUrlId(id), {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: getHeaders(),
             body: JSON.stringify(newCourse)
         });
         return oldCourse as Course;
     }
 }
+
 async function fetchGet(url: string): Promise<any> {
     const response = await fetch(url, {
         headers: getHeaders()
-    });
+    }); 
+    
+    const httpError = getErrorType(response.status);
+    if (httpError.code != 200) {
+        throw httpError;
+    }
+    
     return await response.json();
 }

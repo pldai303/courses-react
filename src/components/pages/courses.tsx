@@ -1,13 +1,17 @@
 import { Typography, List, ListItem, ListItemButton, ListItemText, Paper, Box } from "@mui/material";
-import React, { FC, useContext, useState, useMemo, useEffect, useRef } from "react";
-import { Delete, Visibility, Edit } from "@mui/icons-material";
+import React, { FC, useContext, useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { Delete, Visibility } from "@mui/icons-material";
 import CoursesContext from "../../store/context";
-import { GridColDef, GridRowsProp, DataGrid, GridActionsCellItem, GridRowParams, GridCellEditCommitParams } from "@mui/x-data-grid";
+import { GridColumns, GridRowsProp, DataGrid, GridActionsCellItem, GridRowParams, GridCellEditCommitParams } from "@mui/x-data-grid";
 import { UserData } from "../../models/common/user-data";
 import Course from "../../models/course";
 import ActionConfirmation from "../common/action-confirmation";
 import ModalInfo from "../common/modal-info";
 import courseData from "../../config/courseData.json"
+import { CourseFieldName, dashboardCourseSizes } from "../../config/dashboard-config";
+import { useMediaQuery } from "react-responsive";
+import { getEmptyCourse } from "../../utils/courses-util";
+import { ConfirmationData, emptyConfirmationData } from "../../models/common/confirmation-data-type";
 
 function getInfo(course: Course): string[] {
     const res: string[] = [
@@ -15,10 +19,11 @@ function getInfo(course: Course): string[] {
         `Course Name: ${course.courseName}`,
         `Lecturer   : ${course.lecturerName}`,
         `Hours      : ${course.hoursNum}`,
+        `Cost : ${course.cost}`,
         `Openning Date : ${course.startDate.toLocaleDateString()}`,
         `Course Type : ${course.type}`,
         `Timing  : ${course.dayEvening.join(';')}`
-    ]
+    ];
     return res;
 }
 function getRows(courses: Course[]): GridRowsProp {
@@ -27,40 +32,67 @@ function getRows(courses: Course[]): GridRowsProp {
 const Courses: FC = () => {
 
     const storeValue = useContext(CoursesContext);
-    const [columns, setColumns] = useState(getColumns(storeValue.userData));
-    const rows = useMemo(() => getRows(storeValue.list), [storeValue.list]);
-    const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
-    const [removeID, setRemoveID] = useState<number>(0);
-    const [modalVisible, setModalVisible] = useState(false);
-
+    const confirmationData = useRef<ConfirmationData>(emptyConfirmationData);
     
-
+   
+    
+    const [flUndo, setFlUndo] = useState(false);
+    
+    const [sizedColumns, setSizedColumns] = useState<any[]>([]);
+    const rows = useMemo(() => getRows(storeValue.list), [storeValue.list, flUndo]);
+    const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+    
+    const [modalVisible, setModalVisible] = useState(false);
+    
+    function getFilteredColumns(fields: CourseFieldName[]): any[] {
+        return getColumns(storeValue.userData).filter(column => fields.includes(column.field as any));
+    }
+    const isPortraitMobile = useMediaQuery({ maxWidth: 600, orientation: 'portrait' });
+    const isLandscape = useMediaQuery({ maxWidth: 900 });
+    const mode = useMemo(() => getMode(), [isPortraitMobile, isLandscape]);
+    function getMode(): string {
+        if (isPortraitMobile) {
+            return 'isPortraitMobile';
+        }
+        if (isLandscape) {
+            return 'isLandscape'
+        }
+        return 'isNotMobile';
+    }
+    const callbackMode = useCallback(() =>
+        setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [storeValue.userData, mode]);
     const textModal = useRef<string[]>(['']);
-    useEffect(() => {
-        setColumns(getColumns(storeValue.userData));
 
-    }, [storeValue]);
-    function getColumns(userData: UserData): any[] {
+    useEffect(() => {
+
+        callbackMode();
+    }, [storeValue, callbackMode])
+    function getColumns(userData: UserData): GridColumns {
         return [
-            { field: 'name', headerName: 'Course Name', flex: 150, align: 'center', headerAlign: 'center' },
-            { field: 'lecturer', headerName: 'Lecturer', editable: !!userData.isAdmin, align: 'center', headerAlign: 'center', flex: 120 },
-            { field: 'hoursNum', headerName: 'Hours', type: 'number', editable: !!userData.isAdmin,
-            preProcessEditCellProps: (params: any) => {
-                const hours = +params.props.value
-                const hasError = hours < courseData.minHours || hours > courseData.maxHours;
+            { field: 'courseName', headerName: 'Course Name', flex: 150, align: 'center', headerAlign: 'center' },
+            { field: 'lecturerName',type:'singleSelect', valueOptions: courseData.lecturers, headerName: 'Lecturer', editable: !!userData.isAdmin, align: 'center', headerAlign: 'center', flex: 120 },
+            {
+                field: 'hoursNum', headerName: 'Hours', type: 'number', editable: !!userData.isAdmin,
+                preProcessEditCellProps: (params: any) => {
+                    const hours = +params.props.value
+                    const hasError = hours < courseData.minHours || hours > courseData.maxHours;
+                    return { ...params.props, error: hasError };
+                },
+                align: 'center', headerAlign: 'center'
+            },
+            { field: 'cost', headerName: 'Cost', type: 'number', editable: !!userData.isAdmin,preProcessEditCellProps: (params: any) => {
+                const cost = +params.props.value
+                const hasError = cost < courseData.minCost || cost > courseData.maxCost;
                 return { ...params.props, error: hasError };
-              },
-             align: 'center', headerAlign: 'center' },
-            { field: 'cost', headerName: 'Cost', type: 'number', editable: !!userData.isAdmin, align: 'center', headerAlign: 'center' },
+            }, align: 'center', headerAlign: 'center' },
             { field: 'startDate', headerName: 'Openning Date', type: 'date', editable: !!userData.isAdmin, align: 'center', headerAlign: 'center', flex: 200 },
             {
-                field: 'actions', type: 'actions', getActions: (params: GridRowParams) => {
+                field: 'actions', type: 'actions', width: 70, getActions: (params: GridRowParams) => {
                     const actionItems = [<GridActionsCellItem icon={<Visibility />} label='Details'
                         onClick={() => showDetails(params.id as number)}></GridActionsCellItem>];
                     if (userData.isAdmin) {
                         actionItems.push(<GridActionsCellItem icon={<Delete />} label='Remove'
                             onClick={() => showRemoveConfirmation(params.id as number)} />)
-
                     }
 
                     return actionItems;
@@ -69,21 +101,49 @@ const Courses: FC = () => {
             }
         ]
     };
+    function findCourseData(id: number): Course | undefined {
+        return storeValue.list.find(item => item.id === id);
+    }
+    function onEdit(element: GridCellEditCommitParams) {
+        const course: any = findCourseData(element.id as number);
+        if (course) {
+            const oldValue = course[element.field];
+            const newValue = element.value;
+            if (oldValue !== newValue) {
+                // Show confirmation dialog
+                confirmationData.current.title="Update Confirmation";
+                confirmationData.current.message = `Old value is: ${element.field === 'startDate' ? oldValue.toDateString() : oldValue}, 
+                                    new value is: ${element.field === 'startDate' ? new Date(newValue as string).toDateString() : newValue}. 
+                                    Confirm the change?`;
 
-    
-
-    function onEdit(params: GridCellEditCommitParams) {
-        console.log(params);
+                 const updatedCourse = {...course!, [element.field]: element.value};
+                confirmationData.current.handle = handleUpdate.bind(undefined, updatedCourse);
+                setConfirmOpen(true);
+            }
+        }       
     }
 
     function showRemoveConfirmation(id: number): void {
-        setRemoveID(id);
+       
+        confirmationData.current.message = `Are you sure you want to remove course with ID '${id}'?`
+        confirmationData.current.handle = handleRemove.bind(undefined, id);
+        confirmationData.current.title = "Remove Confirmation";
         setConfirmOpen(true);
     }
-
-    function handleRemove(status: boolean): void {
+    function handleUpdate(course: Course, status: boolean): void {
+        if(status) {
+            storeValue.update(course.id, course);
+        }
+        else {
+            setFlUndo(!flUndo); 
+        }
+        setConfirmOpen(false);
+    }
+    function handleRemove(id: number, status: boolean): void {
+        
         if (status) {
-            storeValue.remove!(removeID);
+            
+            storeValue.remove!(id);
         }
         setConfirmOpen(false);
     }
@@ -91,7 +151,7 @@ const Courses: FC = () => {
         const course = storeValue.list.find(e => e.id === +id);
         if (!!course) {
 
-           textModal.current = getInfo(course);
+            textModal.current = getInfo(course);
 
         } else {
             textModal.current = ["Not found"];
@@ -99,15 +159,14 @@ const Courses: FC = () => {
         }
         setModalVisible(true);
     }
-    return <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Paper sx={{ width: '80vw', height: '80vh', marginTop: '2vh' }}>
-            <DataGrid rows={rows} columns={columns} onCellEditCommit={onEdit}/>
-
-
+    return <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
+    '& .Mui-error': { bgcolor: '#FF9494', color: 'white', width: '100%', height: '100%' } }}>
+        <Paper sx={{ width: { xs: '100vw', sm: '80vw'}, height: '80vh', marginTop: '2vh' }}>
+            <DataGrid rows={rows} columns={sizedColumns} onCellEditCommit={onEdit} />
         </Paper>
-        <ActionConfirmation isVisible={confirmOpen} title="Course Remove"
-            message={`Are you sure you want to remove course with ID '${removeID}'?`}
-            onClose={handleRemove} />
+        <ActionConfirmation isVisible={confirmOpen} title={confirmationData.current.title}
+            message={confirmationData.current.message}
+            onClose={confirmationData.current.handle} />
         <ModalInfo title={"Detailed information about the courses"}
             message={textModal.current} visible={modalVisible} callBack={() => setModalVisible(false)} />
     </Box>

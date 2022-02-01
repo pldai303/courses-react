@@ -13,112 +13,6 @@
   ],
   "courses": [
     {
-      "name": "QA Manual",
-      "lecturer": "Moses",
-      "hoursNum": 200,
-      "cost": 8000,
-      "type": "QA",
-      "dayEvening": [
-        "Day"
-      ],
-      "startAt": "2020-10-04T00:00:00.000Z",
-      "id": 309530,
-      "userId": 1
-    },
-    {
-      "name": "CSS",
-      "lecturer": "Naftali",
-      "hoursNum": 120,
-      "cost": 5000,
-      "type": "Programming",
-      "dayEvening": [
-        "Evening"
-      ],
-      "startAt": "2020-01-20T00:00:00.000Z",
-      "id": 849158,
-      "userId": 1
-    },
-    {
-      "name": "React",
-      "lecturer": "Yackob",
-      "hoursNum": 350,
-      "cost": 11000,
-      "type": "Programming",
-      "dayEvening": [
-        "Day"
-      ],
-      "startAt": "2022-03-07T00:00:00.000Z",
-      "id": 365575,
-      "userId": 1
-    },
-    {
-      "name": "Java Core",
-      "lecturer": "Abraham",
-      "hoursNum": 82,
-      "cost": 5200,
-      "type": "Programming",
-      "dayEvening": [
-        "Day"
-      ],
-      "startAt": "2022-01-06T00:00:00.000Z",
-      "id": 893969,
-      "userId": 1
-    },
-    {
-      "id": 458980,
-      "courseName": "QA Manual",
-      "lecturerName": "Abraham",
-      "hoursNum": 640,
-      "cost": 12774,
-      "type": "QA",
-      "dayEvening": [
-        "Evening"
-      ],
-      "startDate": "2020-05-07T21:00:00.000Z",
-      "userId": 1
-    },
-    {
-      "id": 505319,
-      "courseName": "Java Technologies",
-      "lecturerName": "Moses",
-      "hoursNum": 386,
-      "cost": 10414,
-      "type": "Programming",
-      "dayEvening": [
-        "Day",
-        "Evening"
-      ],
-      "startDate": "2021-06-18T21:00:00.000Z",
-      "userId": 1
-    },
-    {
-      "id": 443926,
-      "courseName": "Java Core",
-      "lecturerName": "Yosef",
-      "hoursNum": 379,
-      "cost": 7443,
-      "type": "QA",
-      "dayEvening": [
-        "Evening"
-      ],
-      "startDate": "2020-05-23T21:00:00.000Z",
-      "userId": 1
-    },
-    {
-      "id": 352737,
-      "courseName": "Java Technologies",
-      "lecturerName": "Asher",
-      "hoursNum": 578,
-      "cost": 7286,
-      "type": "Programming",
-      "dayEvening": [
-        "Day",
-        "Evening"
-      ],
-      "startDate": "2022-05-05T21:00:00.000Z",
-      "userId": 1
-    },
-    {
       "id": 912335,
       "courseName": "React",
       "lecturerName": "Asher",
@@ -247,6 +141,33 @@
         "Day"
       ],
       "startDate": "2019-02-22T22:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 876882,
+      "courseName": "CSS",
+      "lecturerName": "Moses",
+      "hoursNum": 636,
+      "cost": 10340,
+      "type": "Programming",
+      "dayEvening": [
+        "Evening"
+      ],
+      "startDate": "2025-06-05T21:00:00.000Z",
+      "userId": 1
+    },
+    {
+      "id": 416047,
+      "courseName": "Java Core",
+      "lecturerName": "Naftali",
+      "hoursNum": 729,
+      "cost": 12938,
+      "type": "QA",
+      "dayEvening": [
+        "Day",
+        "Evening"
+      ],
+      "startDate": "2023-03-12T22:00:00.000Z",
       "userId": 1
     }
   ]

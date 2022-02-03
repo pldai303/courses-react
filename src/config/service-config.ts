@@ -13,4 +13,4 @@ const courseProvider = new CoursesServiceFirestore("courses", courseData.minId, 
 export const college = new College(courseProvider);
 //export const authService = new AuthServiceJwt("http://localhost:3500");
 //export const authService = new AuthServiceFake();
-export const authService = new AuthServiceFire();
+export const authService = new AuthServiceFire("administartors");

@@ -1,36 +1,64 @@
 import AuthService from "./auth-service";
 //same as getFireStore
-import {getAuth, signInWithEmailAndPassword, signOut} from 'firebase/auth'; 
+import {getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth'; 
 //every service has its own import from rxfire 
 import {authState} from 'rxfire/auth';
 import { collectionData } from "rxfire/firestore";
 
-import { Observable } from "rxjs";
+import { EMPTY, from, Observable } from "rxjs";
 import {map, mergeMap} from 'rxjs/operators';
 import { LoginData } from "../models/common/login-data";
 import { nonAuthorizedUser, UserData } from "../models/common/user-data";
 import appFire from "../config/fire-config";
 
 import { docData } from "rxfire/firestore"; //direct access to collection
+//-----------------------------------
+import { collection, CollectionReference, doc, DocumentReference, DocumentSnapshot, getDoc, getFirestore, query } from "firebase/firestore";
+import { DocumentData } from "rxfire/firestore/interfaces";
+
+import { AdminPanelSettings } from "@mui/icons-material";
 
 export default class AuthServiceFire implements AuthService{
     
 
     private authFire = getAuth(appFire);
+    private collectionAuth : CollectionReference;
+    
+   
 
-    // constructor(private collectionAdministartors : string) {
-        
-    // }
-    //merge two observable for one subscribe (define if user is admin or not)
-    //Use operator mergemap insted of map    
-    //replace observable 1. this user is auth
-    //second observable 2. check if this user is admin
-    getUserData(): Observable<UserData> {
-        return authState(this.authFire).pipe(map(user => (
-            !!user ? {username: user.uid, isAdmin: true, 
-                displayName: user.displayName || user.email!} : nonAuthorizedUser
-        )))
+
+     constructor(private collectionAdministartors : string) {
+        this.collectionAuth = collection(getFirestore(appFire), this.collectionAdministartors);        
+     }
+     
+     async isAdmin(id?: string): Promise<boolean> {
+        if (!id) {
+            return false;
+        }
+
+        const docRef: DocumentReference = doc(this.collectionAuth, id);
+        const docSnap: DocumentSnapshot = await getDoc(docRef);
+
+        return docSnap.exists();
     }
+
+    getUserData(): Observable<UserData> {
+        return authState(this.authFire)
+            .pipe ( mergeMap(user => from(this.isAdmin(user?.uid))
+                .pipe(map((isAdmin) => {
+                    if (!!user) {
+                        return {
+                            username: user.uid,
+                            displayName: user.displayName ?? user.email!,
+                            isAdmin: isAdmin
+                        };
+                    }
+
+                    return nonAuthorizedUser;
+                }))
+            ));
+    }
+
     
     login(loginData: LoginData): Promise<boolean> {
         return signInWithEmailAndPassword(this.authFire, loginData.email, loginData.password)
@@ -41,3 +69,4 @@ export default class AuthServiceFire implements AuthService{
     }
     
 }
+

@@ -6,6 +6,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import FbIconButton from '@mui/material/'
+import { lightBlue } from '@mui/material/colors';
+
+import { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import AccountMenu from './account-menu';
 
 type LoginFormProps = {
     loginFn: (loginData: LoginData) => Promise<boolean>;
@@ -50,24 +55,28 @@ const LoginForm: FC<LoginFormProps> = (props) => {
     }
 
 
-       return (
+   
+      const [googleAccessToken, setGoogleAccessToken] = useState<string>('');
+
+
+      
+
+        return (
         <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
             sx={{
-              marginTop: 8,
+              marginTop: 0,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor:lightBlue[500] }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
+            <Typography component="h1" variant="h5"> Sign in </Typography>
             <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
                 onChange={usernameHandler}
@@ -94,16 +103,14 @@ const LoginForm: FC<LoginFormProps> = (props) => {
                 autoComplete="current-password"
               />
 
-              <Button
-                disabled={!flValid}
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button>            
+              <Button disabled={!flValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, bgcolor:lightBlue[500] }}>
+                sign in
+              </Button> 
             </Box>
+            <Box>
+              <AccountMenu/>
+            </Box>
+            
           </Box>
         </Container>
         </ThemeProvider>

@@ -1,20 +1,17 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import React, { FC, useState, useEffect } from 'react'
+import { Box, Button, IconButton, TextField, Typography } from '@mui/material'
+import React, { FC, useState, useEffect, ReactNode } from 'react'
 import { LoginData } from '../../models/common/login-data';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import FbIconButton from '@mui/material/'
-import { lightBlue } from '@mui/material/colors';
-
-import { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-import AccountMenu from './account-menu';
+import NetworkIcon from '../../models/common/network-icon';
 
 type LoginFormProps = {
     loginFn: (loginData: LoginData) => Promise<boolean>;
     passwordValidationFn: (password: string) => string;
+    networks?: NetworkIcon[]
 }
 const emptyLoginData: LoginData = { email: "", password: "" }
 
@@ -22,7 +19,7 @@ const LoginForm: FC<LoginFormProps> = (props) => {
     const theme = createTheme();
 
 
-    const { loginFn, passwordValidationFn } = props;
+    const { loginFn, passwordValidationFn, networks } = props;
     const [loginData, setLoginData] = useState<LoginData>(emptyLoginData);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [flValid, setflValid] = useState<boolean>(false);
@@ -35,7 +32,7 @@ const LoginForm: FC<LoginFormProps> = (props) => {
         event.preventDefault();
         const res: boolean = await loginFn(loginData);
         if (!res) {
-            alert("Wrong credentials");
+            alert("Wrong credentials or auth service is unavailable");
         } else {
             alert("Login Successed")
         }
@@ -53,30 +50,37 @@ const LoginForm: FC<LoginFormProps> = (props) => {
         loginData.password = password;
         setLoginData({ ...loginData });
     }
+    function getNetworkIcons(): ReactNode {
+      if (networks) {
+          return networks.map(nw => <IconButton key={nw.name}
+             onClick={() =>
+              loginFn({ email: nw.name, password: '' })}
+               >
+
+              <Avatar src={nw.iconUrl} sx={{width:{xs: '6vh', sm: '6vw', lg: '3vw'}}}  />
+          </IconButton>)
+      }
+  }
 
 
-   
-      const [googleAccessToken, setGoogleAccessToken] = useState<string>('');
-
-
-      
-
-        return (
+       return (
         <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
             sx={{
-              marginTop: 0,
+              marginTop: 8,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor:lightBlue[500] }}>
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5"> Sign in </Typography>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
             <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
                 onChange={usernameHandler}
@@ -103,14 +107,20 @@ const LoginForm: FC<LoginFormProps> = (props) => {
                 autoComplete="current-password"
               />
 
-              <Button disabled={!flValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, bgcolor:lightBlue[500] }}>
-                sign in
-              </Button> 
+              <Button
+                disabled={!flValid}
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>            
             </Box>
-            <Box>
-              <AccountMenu/>
-            </Box>
-            
+           { (networks && networks.length != 0) && <Box>
+             or with networks <br/>  
+              {getNetworkIcons()}
+            </Box>}
           </Box>
         </Container>
         </ThemeProvider>

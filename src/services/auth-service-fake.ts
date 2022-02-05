@@ -4,7 +4,7 @@ import { UserData } from "../models/common/user-data";
 import AuthService from "./auth-service";
 export default class AuthServiceFake implements AuthService {
     getUserData(): Observable<UserData> {
-        return of({username : 'admin-courses@email.com', isAdmin : true, displayName : 'admin'})
+        return of({username: 'admin-courses@email.com', isAdmin: true, displayName: 'admin-courses@email.com'});
     }
     login(loginData: LoginData): Promise<boolean> {
         throw new Error("Method not implemented.");
@@ -12,5 +12,5 @@ export default class AuthServiceFake implements AuthService {
     logout(): Promise<boolean> {
         return Promise.resolve(true);
     }
-
+    
 }

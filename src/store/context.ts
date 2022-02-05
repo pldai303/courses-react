@@ -5,7 +5,6 @@ import {college} from "../config/service-config";
 
 
  
-export const initialCourses: CoursesStore = { list: [],
-userData: nonAuthorizedUser};
+export const initialCourses: CoursesStore = { };
 const CoursesContext = createContext<CoursesStore>(initialCourses);
 export default CoursesContext;

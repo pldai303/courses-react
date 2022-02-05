@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import  { FC, Fragment, useContext, useState } from "react";
-import { authService } from "../../config/service-config";
+import { authService, serviceSupportedNetworks } from "../../config/service-config";
 import { LoginData } from "../../models/common/login-data";
 import LoginForm from "../common/loginForm";
 import courseData from "../../config/courseData.json"
@@ -23,7 +23,7 @@ async function loginFn(loginData: LoginData):Promise<boolean> {
         <LoginForm loginFn={loginFn} passwordValidationFn={function (password: string): string {
         return password.length < courseData.passwordLength ?
          `length of password can't be less than ${courseData.passwordLength}` : ''
-    } }></LoginForm>
+    } } networks={serviceSupportedNetworks}></LoginForm>
     {flNavigate && <Navigate to={PATH_COURSES}></Navigate>}
     </Fragment>
 }

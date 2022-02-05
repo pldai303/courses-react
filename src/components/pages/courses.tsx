@@ -12,6 +12,8 @@ import { CourseFieldName, dashboardCourseSizes } from "../../config/dashboard-co
 import { useMediaQuery } from "react-responsive";
 import { getEmptyCourse } from "../../utils/courses-util";
 import { ConfirmationData, emptyConfirmationData } from "../../models/common/confirmation-data-type";
+import { useSelector } from "react-redux";
+import { coursesSelector, userDataSelector } from "../../redux/store";
 
 function getInfo(course: Course): string[] {
     const res: string[] = [
@@ -33,19 +35,20 @@ const Courses: FC = () => {
 
     const storeValue = useContext(CoursesContext);
     const confirmationData = useRef<ConfirmationData>(emptyConfirmationData);
-    
+    const userData: UserData = useSelector(userDataSelector);
+    const courses: Course[] = useSelector(coursesSelector);
    
     
     const [flUndo, setFlUndo] = useState(false);
     
     const [sizedColumns, setSizedColumns] = useState<any[]>([]);
-    const rows = useMemo(() => getRows(storeValue.list), [storeValue.list, flUndo]);
+    const rows = useMemo(() => getRows(courses), [courses, flUndo]);
     const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
     
     const [modalVisible, setModalVisible] = useState(false);
     
     function getFilteredColumns(fields: CourseFieldName[]): any[] {
-        return getColumns(storeValue.userData).filter(column => fields.includes(column.field as any));
+        return getColumns(userData).filter(column => fields.includes(column.field as any));
     }
     const isPortraitMobile = useMediaQuery({ maxWidth: 600, orientation: 'portrait' });
     const isLandscape = useMediaQuery({ maxWidth: 900 });
@@ -60,13 +63,13 @@ const Courses: FC = () => {
         return 'isNotMobile';
     }
     const callbackMode = useCallback(() =>
-        setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [storeValue.userData, mode]);
+        setSizedColumns(getFilteredColumns((dashboardCourseSizes as any)[mode])), [userData, mode]);
     const textModal = useRef<string[]>(['']);
 
     useEffect(() => {
 
         callbackMode();
-    }, [storeValue, callbackMode])
+    }, [ callbackMode])
     function getColumns(userData: UserData): GridColumns {
         return [
             { field: 'courseName', headerName: 'Course Name', flex: 150, align: 'center', headerAlign: 'center' },
@@ -102,7 +105,7 @@ const Courses: FC = () => {
         ]
     };
     function findCourseData(id: number): Course | undefined {
-        return storeValue.list.find(item => item.id === id);
+        return courses.find(item => item.id === id);
     }
     function onEdit(element: GridCellEditCommitParams) {
         const course: any = findCourseData(element.id as number);
@@ -148,7 +151,7 @@ const Courses: FC = () => {
         setConfirmOpen(false);
     }
     function showDetails(id: any) {
-        const course = storeValue.list.find(e => e.id === +id);
+        const course = courses.find(e => e.id === +id);
         if (!!course) {
 
             textModal.current = getInfo(course);

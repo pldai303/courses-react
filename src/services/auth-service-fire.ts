@@ -1,37 +1,27 @@
 import AuthService from "./auth-service";
-//same as getFireStore
-import {getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth'; 
-//every service has its own import from rxfire 
+import {AuthProvider, FacebookAuthProvider, getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut, TwitterAuthProvider} from 'firebase/auth';
 import {authState} from 'rxfire/auth';
-import { collectionData } from "rxfire/firestore";
-
-import { EMPTY, from, Observable } from "rxjs";
+import {from, Observable} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import { LoginData } from "../models/common/login-data";
 import { nonAuthorizedUser, UserData } from "../models/common/user-data";
 import appFire from "../config/fire-config";
-
-import { docData } from "rxfire/firestore"; //direct access to collection
-//-----------------------------------
-import { collection, CollectionReference, doc, DocumentReference, DocumentSnapshot, getDoc, getFirestore, query } from "firebase/firestore";
-import { DocumentData } from "rxfire/firestore/interfaces";
-
-import { AdminPanelSettings } from "@mui/icons-material";
-
-export default class AuthServiceFire implements AuthService{
+import { collection, CollectionReference, doc, DocumentReference, DocumentSnapshot, getDoc, getFirestore } from "firebase/firestore";
+import { FACEBOOK, GITHUB, GOOGLE, MICROSOFT, TWITTER } from "../config/networks-config";
+const networkProviders: Map<string, AuthProvider> = new Map( [
+    [GOOGLE, new GoogleAuthProvider()],
+    [GITHUB, new GithubAuthProvider()],
+    [TWITTER, new TwitterAuthProvider()],
+    [FACEBOOK, new FacebookAuthProvider()],
     
-
+])
+export default class AuthServiceFire implements AuthService {
     private authFire = getAuth(appFire);
-    private collectionAuth : CollectionReference;
-    
-   
-
-
-     constructor(private collectionAdministartors : string) {
-        this.collectionAuth = collection(getFirestore(appFire), this.collectionAdministartors);        
-     }
-     
-     async isAdmin(id?: string): Promise<boolean> {
+    private collectionAuth: CollectionReference;
+    constructor(private collectionAdministrators: string) {
+        this.collectionAuth = collection(getFirestore(appFire), this.collectionAdministrators);
+    };
+    async isAdmin(id?: string): Promise<boolean> {
         if (!id) {
             return false;
         }
@@ -58,15 +48,23 @@ export default class AuthServiceFire implements AuthService{
                 }))
             ));
     }
-
-    
     login(loginData: LoginData): Promise<boolean> {
-        return signInWithEmailAndPassword(this.authFire, loginData.email, loginData.password)
-        .then(()=>true).catch(()=>false);
+        return loginData.password ? this.loginPassword(loginData) : this.loginNetworkProvider(loginData.email);
+       
     }
     logout(): Promise<boolean> {
         return signOut(this.authFire).then(()=>true).catch(()=>false);
     }
+    private loginPassword(loginData: LoginData): Promise<boolean> {
+        return signInWithEmailAndPassword(this.authFire, loginData.email, loginData.password)
+        .then(()=>true).catch(()=>false);
+    }
+    private loginNetworkProvider(provider: string): Promise<boolean> {
+        const networkProvider: AuthProvider | undefined = networkProviders.get(provider);
+        if (!networkProvider) {
+            return Promise.resolve(false);
+        }
+        return signInWithPopup(this.authFire, networkProvider).then(()=>true).catch(()=>false);
+    }
     
 }
-

@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import AddCourse from "../components/pages/add-course";
 import Courses from "../components/pages/courses";
 import Generation from "../components/pages/development/generation";
@@ -7,7 +6,7 @@ import Logout from "../components/pages/logout";
 import StatisticsCost from "../components/pages/statistics-cost";
 import StatisticsHours from "../components/pages/statistics-hours";
 import { RouteType } from "../models/common/route-type";
-export const PATH_COURSES = "/courses" ;
+export const PATH_COURSES = "/courses";
 export const PATH_LOGIN = "/login";
 export const PATH_LOGOUT = "/logout";
 export const PATH_ADD_COURSE = "/courses/add";
@@ -20,7 +19,7 @@ export const routes: RouteType[] = [
     
     {path: PATH_STATISTICS_COST, element: <StatisticsCost/>, label: 'Cost Statistics', authenticated: true},
     {path: PATH_STATISTICS_HOURS, element: <StatisticsHours/>, label: 'Hours Statistics', authenticated: true},
-    {path: PATH_LOGIN, element: <Login/>, label: 'Sign In>'},
+    {path: PATH_LOGIN, element: <Login/>, label: 'Sign In'},
     {path: PATH_LOGOUT, element: <Logout/>, label: 'Sign out', authenticated: true},
     
 ]

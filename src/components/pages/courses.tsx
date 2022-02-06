@@ -1,7 +1,6 @@
-import { Typography, List, ListItem, ListItemButton, ListItemText, Paper, Box } from "@mui/material";
-import React, { FC, useContext, useState, useMemo, useEffect, useRef, useCallback } from "react";
+import {  Paper, Box } from "@mui/material";
+import { FC, useContext, useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Delete, Visibility } from "@mui/icons-material";
-import CoursesContext from "../../store/context";
 import { GridColumns, GridRowsProp, DataGrid, GridActionsCellItem, GridRowParams, GridCellEditCommitParams } from "@mui/x-data-grid";
 import { UserData } from "../../models/common/user-data";
 import Course from "../../models/course";
@@ -10,10 +9,10 @@ import ModalInfo from "../common/modal-info";
 import courseData from "../../config/courseData.json"
 import { CourseFieldName, dashboardCourseSizes } from "../../config/dashboard-config";
 import { useMediaQuery } from "react-responsive";
-import { getEmptyCourse } from "../../utils/courses-util";
 import { ConfirmationData, emptyConfirmationData } from "../../models/common/confirmation-data-type";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { coursesSelector, userDataSelector } from "../../redux/store";
+import { addCourseAction, removeCourseAction, updateCourseAction } from "../../redux/actions";
 
 function getInfo(course: Course): string[] {
     const res: string[] = [
@@ -33,7 +32,7 @@ function getRows(courses: Course[]): GridRowsProp {
 }
 const Courses: FC = () => {
 
-    const storeValue = useContext(CoursesContext);
+    const dispatch = useDispatch();
     const confirmationData = useRef<ConfirmationData>(emptyConfirmationData);
     const userData: UserData = useSelector(userDataSelector);
     const courses: Course[] = useSelector(coursesSelector);
@@ -135,7 +134,7 @@ const Courses: FC = () => {
     }
     function handleUpdate(course: Course, status: boolean): void {
         if(status) {
-            storeValue.update!(course.id, course);
+           dispatch( updateCourseAction(course.id, course));
         }
         else {
             setFlUndo(!flUndo); 
@@ -146,7 +145,7 @@ const Courses: FC = () => {
         
         if (status) {
             
-            storeValue.remove!(id);
+            dispatch(removeCourseAction(id));
         }
         setConfirmOpen(false);
     }
@@ -176,5 +175,3 @@ const Courses: FC = () => {
 
 }
 export default Courses;
-
-

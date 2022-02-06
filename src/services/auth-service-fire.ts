@@ -49,11 +49,13 @@ export default class AuthServiceFire implements AuthService {
             ));
     }
     login(loginData: LoginData): Promise<boolean> {
-        return loginData.password ? this.loginPassword(loginData) : this.loginNetworkProvider(loginData.email);
+        const val : Promise<boolean> = loginData.password ? this.loginPassword(loginData) : this.loginNetworkProvider(loginData.email);
+        return val;
        
     }
     logout(): Promise<boolean> {
-        return signOut(this.authFire).then(()=>true).catch(()=>false);
+        const val : Promise<boolean> = signOut(this.authFire).then(()=>true).catch(()=>false);
+        return val;
     }
     private loginPassword(loginData: LoginData): Promise<boolean> {
         return signInWithEmailAndPassword(this.authFire, loginData.email, loginData.password)

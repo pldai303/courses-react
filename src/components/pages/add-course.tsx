@@ -1,18 +1,20 @@
-import { Box, Typography, Button } from "@mui/material";
+
 import React, { useContext } from "react";
-import  Course  from "../../models/course";
-import CoursesContext from "../../store/context";
+
+
 
 import AddCourseForm from "../add-course-form";
 import courseData from "../../config/courseData.json"
+import { useDispatch } from "react-redux";
+import { addCourseAction } from "../../redux/actions";
 
 const AddCourse: React.FC = () => {
     //хук useContext() позволяет делать рендеринг компоненты по изменению глобального ресурсы
-    const storeValue = useContext(CoursesContext);
+    const dispatch = useDispatch();
     const { courseNames, lecturers, types, timing } = courseData;
     return (
         <AddCourseForm 
-            addCourseFn={storeValue.add! }
+            addCourseFn={(course) => dispatch(addCourseAction(course)) }
             courseConfig={{
                 courseNames,
                 lecturers,

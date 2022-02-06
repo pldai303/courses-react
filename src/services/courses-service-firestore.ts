@@ -1,8 +1,7 @@
 import CoursesService from "./courses-service";
 import {collection, doc, getDoc, setDoc, deleteDoc, getFirestore, CollectionReference} from 'firebase/firestore';
-import firebase from 'firebase/firestore'
 import appFire from "../config/fire-config";
-import { Observable, throwError } from "rxjs";
+import { Observable } from "rxjs";
 import {collectionData} from "rxfire/firestore";
 import Course from '../models/course';
 import { getRandomInteger } from "../utils/common/random";
